@@ -3,10 +3,13 @@ package com.example.mddapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -29,7 +32,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private  static  final String URL = "http://192.168.43.201:8080/pom/api.php";
+    private  static  final String URL = "http://192.168.1.149:8080/pom/api.php";
     RecyclerView recyclerView;
     DiagnosisAdapter diagnosisAdapter;
     EditText editTextSearch;
@@ -134,6 +137,28 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         Volley.newRequestQueue(this).add(stringRequest);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_menu,menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView =  (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                diagnosisAdapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
     }
 }
 /*String URL="https://healthservice.priaid.ch/diagnosis?symptoms=[189]&gender=male&year_of_birth=1993&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRhbmN1bi5vZ2luZG8zQGdtYWlsLmNvbSIsInJvbGUiOiJVc2VyIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvc2lkIjoiMzIzMyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvdmVyc2lvbiI6IjEwOSIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbGltaXQiOiIxMDAiLCJodHRwOi8vZXhhbXBsZS5vcmcvY2xhaW1zL21lbWJlcnNoaXAiOiJCYXNpYyIsImh0dHA6Ly9leGFtcGxlLm9yZy9jbGFpbXMvbGFuZ3VhZ2UiOiJlbi1nYiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvZXhwaXJhdGlvbiI6IjIwOTktMTItMzEiLCJodHRwOi8vZXhhbXBsZS5vcmcvY2xhaW1zL21lbWJlcnNoaXBzdGFydCI6IjIwMTktMTAtMjEiLCJpc3MiOiJodHRwczovL2F1dGhzZXJ2aWNlLnByaWFpZC5jaCIsImF1ZCI6Imh0dHBzOi8vaGVhbHRoc2VydmljZS5wcmlhaWQuY2giLCJleHAiOjE1NzIyNzA3NDAsIm5iZiI6MTU3MjI2MzU0MH0.7-gh8A1PwtlV44vWzyKnqCzNxe4L52UxdecByNx1Az8&format=json&language=en-gb";

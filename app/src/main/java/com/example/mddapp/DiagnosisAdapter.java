@@ -33,6 +33,10 @@ implements Filterable {
         this.context = context;
         this.diagnosisList = diagnosisList;
     }
+    DiagnosisAdapter(List<Diagnosis>diagnosisList){
+        this.diagnosisList = diagnosisList;
+        filterdiagnosisList = new ArrayList<>(diagnosisList);
+    }
 
     @NonNull
     @Override
@@ -59,30 +63,26 @@ implements Filterable {
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
-                String charString = charSequence.toString();
-                if (charString.isEmpty()) {
-                    filterdiagnosisList = diagnosisList;
-                } else {
-                    List<Diagnosis> filteredList = new ArrayList<>();
-                    for (Diagnosis row : diagnosisList) {
-
-                        // name match condition. this might differ depending on your requirement
-                        // here we are looking for name or phone number match
-                        if (row.getProfname().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(row);
+                List<Diagnosis> filteredList = new ArrayList<>();
+                if(charSequence == null || charSequence.length()==0){
+                    filteredList.addAll(filterdiagnosisList);
+                }else {
+                    String filterPattern = charSequence.toString().toLowerCase().trim();
+                    for (Diagnosis item : filterdiagnosisList){
+                        if(item.getProfname().toLowerCase().contains(filterPattern)){
+                            filteredList.add(item);
                         }
                     }
-
-                    filterdiagnosisList = filteredList;
                 }
-
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = filterdiagnosisList;
+                filterResults.values = filteredList;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                diagnosisList.clear();
+                diagnosisList.addAll((List) filterResults.values);
                 filterdiagnosisList = (ArrayList<Diagnosis>) filterResults.values;
                 notifyDataSetChanged();
             }
