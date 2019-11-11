@@ -32,6 +32,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    //modify the url accordingly
     private  static  final String URL = "http://192.168.1.149:8080/pom/api.php";
     RecyclerView recyclerView;
     DiagnosisAdapter diagnosisAdapter;
